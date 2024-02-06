@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Swagger MapTool - OpenAPI 3.0
+  description: >-
+    This is a sample MapTool Server based on the OpenAPI 3.0 specification. 
+  version: 0.1.0
+servers:
+  - url: https://maptool.swagger.io/api/v1
+
+tags:
+  - name: data
+    description: Data access from libraries
+
+paths:
+  /namespaces:
+    get:
+      tags:
+        - data
+      summary: List all available namespaces
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /data/{namespace}/list:
+    get:
+      tags:
+        - data
+      summary: List all data items in the library
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileItem'
+              example: 
+                - name: public/auto_exec.mts
+                  autoExecute: true
+                  description: Auto executable macro link
+                - name: public/myUDF.mts
+                  description: My Test UDF in a drop in lib
+
+  /data/{namespace}/{item}:
+    get:
+      tags: 
+        - data
+      summary: Get a data item from the library
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileItem'
+              example: 
+                name: public/auto_exec.mts
+                autoExecute: true
+                description: Auto executable macro link
+
+components:
+  schemas:
+    FileItem:
+      type: object
+      properties:
+        name: 
+          type: string
+          description: The name and path of the file
+        autoExecute:
+          type: boolean
+          description: Whether the macro can auto execute.
+        description:
+          type: string
+          description: A description of the file. 
+      required: 
+        - name
+      example: 
+        name: public/auto_exec.mts
+        description: Auto executable macro link
+    FileItems:
+      type: array
+      items: 
+        type: 
+        
+        
+      
