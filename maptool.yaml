@@ -1,16 +1,13 @@
 openapi: 3.0.3
 info:
   title: Swagger MapTool - OpenAPI 3.0
-  description: >-
-    This is a sample MapTool Server based on the OpenAPI 3.0 specification. 
+  description: 'This is a sample MapTool Server based on the OpenAPI 3.0 specification. '
   version: 0.1.0
 servers:
   - url: https://maptool.swagger.io/api/v1
-
 tags:
   - name: data
     description: Data access from libraries
-
 paths:
   /namespaces:
     get:
@@ -26,8 +23,31 @@ paths:
                 type: array
                 items:
                   type: string
-
-  /data/{namespace}/list:
+              example:
+                - net.rptools.lib
+                - net.example.addon
+                - org.my.example
+                
+  /namespaces/{namespace}:
+    get:
+      tags: 
+        - data
+      summary: Get information about add-on with the supplied namespace.
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Namespace'
+                
+  /data/{namespace}/items:
     get:
       tags:
         - data
@@ -47,16 +67,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FileItem'
-              example: 
+              example:
                 - name: public/auto_exec.mts
                   autoExecute: true
                   description: Auto executable macro link
                 - name: public/myUDF.mts
                   description: My Test UDF in a drop in lib
-
-  /data/{namespace}/{item}:
+                  
+  /data/{namespace}/items/{item}:
     get:
-      tags: 
+      tags:
         - data
       summary: Get a data item from the library
       parameters:
@@ -77,17 +97,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FileItem'
-              example: 
+              example:
                 name: public/auto_exec.mts
                 autoExecute: true
                 description: Auto executable macro link
-
 components:
   schemas:
-    FileItem:
+    Namespace:
       type: object
       properties:
         name: 
+          type: string
+          description: name of the library
+          example: test-library
+        version: 
+          type: string
+          example: 1.0.0
+        website: 
+          type: string
+          example: www.rptools.net
+        gitUrl:  
+          type: string
+          example: github.com/RPTools/test-library
+        authors:
+          type: array
+          items:
+            type: string
+          example:
+            - RPTools Team
+        license:  
+          type: string
+          example: GPL 3.0
+        namespace:  
+          type: string
+          example: net.rptools.maptool.test-library
+        description:  
+          type: string
+          example: My new test library for stuff
+        shortDescription:  
+          type: string
+          example: test library
+        allowsUriAccess:  
+          type: boolean
+          example: true
+        readMeFile:  
+          type: string
+          example: readme.md
+        licenseFile:  
+          type: string
+          example: license.txt
+        requires: 
+          type: array
+          items:
+            type: string
+          example: 
+            - net.rptools.maptool.lib.tokens
+        exports:
+          type: array
+          items:
+            type: string
+          example: 
+            - /somedir/
+            - /someotherdir/somefile.js
+
+    FileItem:
+      type: object
+      properties:
+        name:
           type: string
           description: The name and path of the file
         autoExecute:
@@ -95,16 +171,10 @@ components:
           description: Whether the macro can auto execute.
         description:
           type: string
-          description: A description of the file. 
-      required: 
+          description: A description of the file.
+      required:
         - name
-      example: 
+      example:
         name: public/auto_exec.mts
         description: Auto executable macro link
-    FileItems:
-      type: array
-      items: 
-        type: 
-        
-        
-      
+
