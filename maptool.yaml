@@ -101,6 +101,78 @@ paths:
                 name: public/auto_exec.mts
                 autoExecute: true
                 description: Auto executable macro link
+                
+  /data/{namespace}/items/findByName:
+    get:
+      tags:
+        - data
+      summary: List all data items in the library which match the supplied name.
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileItem'
+              example:
+                - name: public/auto_exec.mts
+                  autoExecute: true
+                  description: Auto executable macro link
+                - name: public/myUDF.mts
+                  description: My Test UDF in a drop in lib
+
+                
+  /data/{namespace}/items/findByPath:
+    get:
+      tags:
+        - data
+      summary: List all data items in the library which match the supplied path.
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: recurse
+          in: query
+          required: false
+          schema:
+            type: boolean
+            
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileItem'
+              example:
+                - name: public/auto_exec.mts
+                  autoExecute: true
+                  description: Auto executable macro link
+                - name: public/myUDF.mts
+                  description: My Test UDF in a drop in lib
+
 components:
   schemas:
     Namespace:
