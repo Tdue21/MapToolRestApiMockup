@@ -93,7 +93,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DataItem'
+              $ref: '#/components/schemas/FileItem'
       responses:
         '204':
           description: successful operation
@@ -231,6 +231,66 @@ paths:
           description: not found
 
 
+  /data/{namespace}/items/content/{item}:
+    get:
+      tags:
+        - Data
+      summary: Get the content of a data item from the library
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+            
+        '404':
+          description: not found
+
+    post:
+      tags:
+        - Data
+      summary: Posts the content of a data item from the library
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The content of the data file. 
+        content:
+          application/text:
+            schema:
+              type: string
+          
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+            
+        '404':
+          description: not found
+
 
 components:
   schemas:
@@ -309,22 +369,3 @@ components:
         name: public/auto_exec.mts
         description: Auto executable macro link
         
-    DataItem:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name and path of the file
-        autoExecute:
-          type: boolean
-          description: Whether the macro can auto execute.
-        description:
-          type: string
-          description: A description of the file.
-        content:
-          type: string
-          description: the content of the file.
-      required:
-        - name
-        
-
