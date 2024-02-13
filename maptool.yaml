@@ -3,16 +3,17 @@ info:
   title: Swagger MapTool - OpenAPI 3.0
   description: 'This is a sample MapTool Server based on the OpenAPI 3.0 specification. '
   version: 0.1.0
-servers:
-  - url: https://maptool.swagger.io/api/v1
+#servers:
+#  - url: lib://maptool.api/
+#  - url: https://maptool.swagger.io/api/v1
 tags:
-  - name: data
-    description: Data access from libraries
+  - name: Data
+    description: MapTool data access from libraries
 paths:
   /namespaces:
     get:
       tags:
-        - data
+        - Data
       summary: List all available namespaces
       responses:
         '200':
@@ -31,7 +32,7 @@ paths:
   /namespaces/{namespace}:
     get:
       tags: 
-        - data
+        - Data
       summary: Get information about add-on with the supplied namespace.
       parameters:
         - name: namespace
@@ -46,11 +47,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Namespace'
+        '404':
+          description: not found
                 
   /data/{namespace}/items:
     get:
       tags:
-        - data
+        - Data
       summary: List all data items in the library
       parameters:
         - name: namespace
@@ -73,11 +76,36 @@ paths:
                   description: Auto executable macro link
                 - name: public/myUDF.mts
                   description: My Test UDF in a drop in lib
-                  
+        '404':
+          description: not found
+    post:
+      tags:
+        - Data
+      summary: Create a new data item in the library.
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: create a new item in the library.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataItem'
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception                  
+
   /data/{namespace}/items/{item}:
     get:
       tags:
-        - data
+        - Data
       summary: Get a data item from the library
       parameters:
         - name: namespace
@@ -101,11 +129,36 @@ paths:
                 name: public/auto_exec.mts
                 autoExecute: true
                 description: Auto executable macro link
-                
+        '404':
+          description: not found
+    delete:
+      tags:
+        - Data
+      summary: Delete a data item in the library.
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item
+          in: path
+          required: true
+          schema:
+            type: string
+            
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception                  
+
   /data/{namespace}/items/findByName:
     get:
       tags:
-        - data
+        - Data
       summary: List all data items in the library which match the supplied name.
       parameters:
         - name: namespace
@@ -133,12 +186,14 @@ paths:
                   description: Auto executable macro link
                 - name: public/myUDF.mts
                   description: My Test UDF in a drop in lib
+        '404':
+          description: not found
 
                 
   /data/{namespace}/items/findByPath:
     get:
       tags:
-        - data
+        - Data
       summary: List all data items in the library which match the supplied path.
       parameters:
         - name: namespace
@@ -172,6 +227,10 @@ paths:
                   description: Auto executable macro link
                 - name: public/myUDF.mts
                   description: My Test UDF in a drop in lib
+        '404':
+          description: not found
+
+
 
 components:
   schemas:
@@ -249,4 +308,23 @@ components:
       example:
         name: public/auto_exec.mts
         description: Auto executable macro link
+        
+    DataItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name and path of the file
+        autoExecute:
+          type: boolean
+          description: Whether the macro can auto execute.
+        description:
+          type: string
+          description: A description of the file.
+        content:
+          type: string
+          description: the content of the file.
+      required:
+        - name
+        
 
